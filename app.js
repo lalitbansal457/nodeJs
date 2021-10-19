@@ -1,6 +1,12 @@
 const http = require("http");
-const route = require("./route");
+const express = require("express");
+//const route = require("./route");
 
-const server = http.createServer(route)
+const app = express();
 
-server.listen(3000)
+app.use((req, res, next) => {
+	console.log("Inside request")
+	next();
+})
+
+app.listen(3000)
