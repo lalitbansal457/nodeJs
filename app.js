@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const server = http.createServer((req, res) => {
 	const url = req.url;
-	console.log(url)
+	console.log(url);
 
 	if(url == "/") {
 		res.setHeader("content-type", "text/html");
@@ -15,7 +15,18 @@ const server = http.createServer((req, res) => {
 	}
 
 	if(url == "/post" && req.method == "POST" ) {
-		fs.writeFileSync("data.text", "Dummy");
+		const body = [];
+		req.on("data", (chunk) => {
+			body.push(chunk);
+		})
+
+		req.on("end", () => {
+			let parsedBody = Buffer.concat(body).toString();
+			console.log(parsedBody);
+			let message = parsedBody.split("=")[1]
+			fs.writeFileSync("data.text", message);
+		})
+
 		res.statusCode = 302;
 		res.setHeader("Location", "/");
 		return res.end();
